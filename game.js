@@ -618,29 +618,56 @@
     bannerTimer = time || 2;
   }
 
+  // Build bar on the skill-choice screen: squad cats on the left, relics on the right
+  function renderBuildSlots() {
+    const fill = (row, icon, total, entries) => {
+      row.innerHTML = `<span class="cap"><svg><use href="#i-${icon}"/></svg></span>`;
+      for (let k = 0; k < total; k++) {
+        const s = document.createElement('span');
+        s.className = 'slot';
+        const e = entries[k];
+        if (e) {
+          if (e.def) s.appendChild(catPortrait(e.def, e.lvl, 32)); else s.textContent = e.icon;
+          if (e.lvl > 1) s.insertAdjacentHTML('beforeend', `<b>${e.lvl}</b>`);
+        }
+        row.appendChild(s);
+      }
+    };
+    fill($('luCats'), 'paw', MAX_CATS, G.cats);
+    fill($('luItems'), 'bag', ITEMS.length, ITEMS.filter((it) => G.items[it.id]).map((it) => ({ icon: it.icon, lvl: G.items[it.id] })));
+  }
+
   function openLevelUp() {
     state = 'levelup';
     releaseJoy();
     currentChoices = pickUpgrades();
+    renderBuildSlots();
     cardsEl.innerHTML = '';
-    currentChoices.forEach((u, i) => {
+    const star = (cls) => `<svg class="${cls}"><use href="#i-star"/></svg>`;
+    currentChoices.forEach((u) => {
       const b = document.createElement('button');
-      b.className = 'card' + (u.kind === 'new' ? ' newcat' : '');
+      b.className = 'card';
       if (u.def) b.style.setProperty('--cc', u.def.magic);
-      b.innerHTML = `<kbd>${i + 1}</kbd>`;
-      const icon = document.createElement('div');
-      icon.className = 'icon';
-      if (u.def) icon.appendChild(catPortrait(u.def, u.kind === 'lvl' ? u.cat.lvl + 1 : 1));
+      else if (u.item) b.style.setProperty('--cc', u.item.color);
+      // stars: level after picking / max level
+      const have = u.kind === 'lvl' ? u.cat.lvl : u.item ? G.items[u.item.id] || 0 : 0;
+      const max = u.kind === 'heal' ? 0 : u.item ? u.item.max : CAT_MAX_LVL;
+      const isNew = u.kind === 'new' || (u.item && !have);
+      const tag = u.kind === 'new' ? u.tag : u.item ? 'Реликвия' : u.kind === 'lvl' ? u.def.title : u.tag;
+      b.innerHTML =
+        (isNew ? '<span class="cnew">Новый!</span>' : '') +
+        `<div class="chead">${u.def ? u.def.name : u.name}</div>` +
+        `<div class="cbody"><div class="icon"></div><div class="cdesc"><span class="clvl">${tag}</span>${u.desc}</div></div>` +
+        `<div class="cstars">${star('on').repeat(have)}${max ? star('next') : ''}${star('').repeat(Math.max(0, max - have - 1))}</div>`;
+      const icon = b.querySelector('.icon');
+      if (u.def) icon.appendChild(catPortrait(u.def, have + 1, 60));
       else icon.textContent = u.item ? u.item.icon : '🐟';
-      b.appendChild(icon);
-      b.insertAdjacentHTML('beforeend',
-        `<div class="cname">${u.name}</div>` +
-        `<div class="clvl ${u.kind === 'new' ? 'new' : ''}">${u.kind === 'new' ? 'Новый кот · ' + u.tag : u.tag}</div>` +
-        `<div class="cdesc">${u.desc}</div>` +
-        (u.kind === 'lvl' ? `<div class="pips">${'<i class="on"></i>'.repeat(u.cat.lvl)}<i class="next"></i>${'<i></i>'.repeat(CAT_MAX_LVL - u.cat.lvl - 1)}</div>` : ''));
       b.addEventListener('click', () => chooseUpgrade(u));
       cardsEl.appendChild(b);
     });
+    const conf = $('luConfetti'), colors = ['#ffd166', '#ff8a3d', '#5ee7ff', '#7ee081', '#ff4d6d', '#b7a6ff'];
+    conf.innerHTML = Array.from({ length: 26 }, (_, k) =>
+      `<i style="left:${(Math.random() * 96).toFixed(1)}%;top:${(Math.random() * 92).toFixed(1)}%;background:${colors[k % colors.length]};rotate:${(Math.random() * 90) | 0}deg;animation-delay:${(Math.random() * 0.3).toFixed(2)}s,${(Math.random() * 1.5).toFixed(2)}s"></i>`).join('');
     // brief lock so a lifted finger doesn't pick a card by accident
     cardsEl.classList.add('locked');
     setTimeout(() => cardsEl.classList.remove('locked'), 380);

@@ -178,9 +178,14 @@
   <!-- Level up -->
   <div id="levelup" class="screen hidden">
     <div class="lu-wrap">
-      <h2>Новый уровень!</h2>
-      <p class="sub">Выбери 1 из 3</p>
+      <div class="lu-confetti" id="luConfetti"></div>
+      <div class="lu-ribbon"><h2>Выбор навыка</h2></div>
+      <div class="lu-slots">
+        <div class="lu-row cats" id="luCats"></div>
+        <div class="lu-row items" id="luItems"></div>
+      </div>
       <div id="cards"></div>
+      <p class="lu-hint">Выбери навык для изучения</p>
     </div>
   </div>
 
