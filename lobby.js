@@ -334,7 +334,7 @@
     const i = P.chapter, ch = CHAPTERS[i], locked = i > P.unlocked;
     const best = P.best[i] || 0;
     $('lbChNum').textContent = `Глава ${i + 1}`;
-    $('lbChName').textContent = ch.name;
+    $('lbChName').textContent = `${i + 1}. ${ch.name}`;
     const card = $('lbChCard');
     card.style.setProperty('--cc', ch.color);
     if (card.dataset.ch !== String(i)) { $('lbChArt').innerHTML = chapterArt(i); card.dataset.ch = i; }
@@ -342,7 +342,7 @@
     card.classList.toggle('cleared', best >= 360);
     $('lbChMeta').innerHTML = locked
       ? `<span class="lb-tag lock">${I('lock')}Победи в главе ${i}, чтобы открыть</span>`
-      : `<span class="desc">${esc(ch.desc)}</span><span class="lb-tag ${best >= 360 ? 'ok' : ''}">${best >= 360 ? I('check') + 'Пройдено' : best ? I('clock') + 'Рекорд ' + fmtClock(best) : I('star') + 'Новая глава'}</span>`;
+      : `<span class="desc">${esc(ch.desc)}</span><span class="lb-tag ${best >= 360 ? 'ok' : ''}">${best >= 360 ? I('check') + 'Пройдено' : best ? 'Рекорд: ' + fmtClock(best) : 'Рекорд: —'}</span>`;
     $('lbChDots').innerHTML = CHAPTERS.map((c, k) => `<i class="${k === i ? 'on' : ''} ${k > P.unlocked ? 'lk' : ''}" style="--cc:${c.color}"></i>`).join('');
     $('lbPrev').disabled = i === 0;
     $('lbNext').disabled = i === CHAPTERS.length - 1;
