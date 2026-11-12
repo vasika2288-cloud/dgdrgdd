@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#150f26" />
+  <title>Meow Squad — Коты-маги против крысиной орды</title>
+  <meta name="description" content="Meow Squad: коты-маги кружат вокруг героя и сами атакуют крысиную орду. Динамичный браузерный survivors-рогалик." />
+  <meta property="og:site_name" content="Meow Squad" />
+  <meta property="og:title" content="Meow Squad — Коты-маги против крысиной орды" />
+  <meta property="og:description" content="Управляй героем, собирай отряд боевых котов-магов и уничтожай крысиную орду в динамичном survivors-рогалике." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/lobby.css" />
+</head>
+<body>
+  <!-- Lobby icon set (used via <svg><use href="#i-…"/></svg>) -->
+  <svg class="lb-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13.5 1.8 4 13.6h6.6l-.8 8.6L20 9.8h-6.8z" fill="#ffd23f" stroke="#a65a00" stroke-width="1.6" stroke-linejoin="round"/><path d="M12.4 4.8 7.6 11.2" stroke="#fff6c2" stroke-width="1.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-fish" viewBox="0 0 24 24"><path d="M2.5 12c2.6-4.6 8.6-6.4 13.6-2.4L21 6v12l-4.9-3.6C11.1 18.4 5.1 16.6 2.5 12z" fill="#6cd3ff" stroke="#16508a" stroke-width="1.6" stroke-linejoin="round"/><path d="M5.6 10.8c1.8-2.2 5-3.1 7.8-1.9" stroke="#e2f8ff" stroke-width="1.3" fill="none" stroke-linecap="round"/><circle cx="7" cy="12.3" r="1.2" fill="#16508a"/></symbol>
+    <symbol id="i-gem" viewBox="0 0 24 24"><path d="M6.5 3h11L22 9 12 21.5 2 9z" fill="#c77dff" stroke="#4b1a8a" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 9h8l-4 12.5z" fill="#9d47ef"/><path d="M2 9h20M9.5 3 8 9l4 12.5L16 9l-1.5-6" fill="none" stroke="#f1dcff" stroke-width="1.1" stroke-linejoin="round" opacity=".85"/></symbol>
+    <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3.5" y="10" width="17" height="11" rx="2" fill="#ff5d8f" stroke="#7a1238" stroke-width="1.6"/><rect x="2.2" y="7" width="19.6" height="4.5" rx="1.5" fill="#ff8db2" stroke="#7a1238" stroke-width="1.6"/><path d="M10.3 7h3.4v14h-3.4z" fill="#ffd23f" stroke="#7a1238" stroke-width="1.2"/><path d="M12 7C10 3 6.2 3.4 6.6 5.6 7 7.4 12 7 12 7zm0 0c2-4 5.8-3.6 5.4-1.4C17 7.4 12 7 12 7z" fill="#ffd23f" stroke="#7a1238" stroke-width="1.3" stroke-linejoin="round"/></symbol>
+    <symbol id="i-scroll" viewBox="0 0 24 24"><rect x="4.5" y="3" width="13.5" height="18" rx="2.2" fill="#ffe7b0" stroke="#8a5a12" stroke-width="1.6"/><path d="M8 8h6.5M8 11.5h6.5M8 15h3.5" stroke="#b07a26" stroke-width="1.6" stroke-linecap="round"/><circle cx="18" cy="17.5" r="4.2" fill="#3fae5a" stroke="#144a22" stroke-width="1.4"/><path d="m16.1 17.6 1.3 1.3 2.5-2.7" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7 5H3.6c0 3 1.5 4.6 4 4.8M17 5h3.4c0 3-1.5 4.6-4 4.8" fill="none" stroke="#8a5a00" stroke-width="1.7"/><path d="M7 3h10v5a5 5 0 0 1-10 0z" fill="#ffd23f" stroke="#8a5a00" stroke-width="1.6" stroke-linejoin="round"/><path d="M10.5 13h3l.6 4h-4.2z" fill="#e0a52e" stroke="#8a5a00" stroke-width="1.4"/><rect x="7" y="17" width="10" height="4" rx="1.2" fill="#b0702a" stroke="#5a3400" stroke-width="1.4"/><path d="M9.6 5.4v2.6" stroke="#fff3b0" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="i-sound" viewBox="0 0 24 24"><path d="M3.5 9H7l4.5-4v14L7 15H3.5z" fill="#ece8ff" stroke="#3a2a6e" stroke-width="1.6" stroke-linejoin="round"/><path d="M15 9a4 4 0 0 1 0 6M17.8 6.3a7.6 7.6 0 0 1 0 11.4" fill="none" stroke="#5ee7ff" stroke-width="1.9" stroke-linecap="round"/></symbol>
+    <symbol id="i-mute" viewBox="0 0 24 24"><path d="M3.5 9H7l4.5-4v14L7 15H3.5z" fill="#ece8ff" stroke="#3a2a6e" stroke-width="1.6" stroke-linejoin="round"/><path d="m15.5 9.5 5 5m0-5-5 5" stroke="#ff4d6d" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><path d="M8.5 10V6.5a3.5 3.5 0 0 1 7 0V10" fill="none" stroke="#7a3a00" stroke-width="1.8" stroke-linecap="round"/><path d="M4.5 8h15l-1.2 12.2a1.5 1.5 0 0 1-1.5 1.3H7.2a1.5 1.5 0 0 1-1.5-1.3z" fill="#ffb347" stroke="#7a3a00" stroke-width="1.6" stroke-linejoin="round"/><path d="m12 11.8 1.1 2.2 2.4.3-1.8 1.6.5 2.4-2.2-1.2-2.2 1.2.5-2.4-1.8-1.6 2.4-.3z" fill="#fff3b0"/></symbol>
+    <symbol id="i-paw" viewBox="0 0 24 24"><g fill="#ffb4c8" stroke="#7a2848" stroke-width="1.6"><path d="M12 11.2c3.6 0 6.2 3.3 6.2 6 0 2.2-1.8 3.3-3.5 3.3-1.2 0-1.8-.6-2.7-.6s-1.5.6-2.7.6c-1.7 0-3.5-1.1-3.5-3.3 0-2.7 2.6-6 6.2-6z"/><ellipse cx="5" cy="10.2" rx="2" ry="2.5"/><ellipse cx="9.2" cy="5.8" rx="2.1" ry="2.6"/><ellipse cx="14.8" cy="5.8" rx="2.1" ry="2.6"/><ellipse cx="19" cy="10.2" rx="2" ry="2.5"/></g></symbol>
+    <symbol id="i-evolve" viewBox="0 0 24 24"><path d="M12 2 20.7 7v10L12 22l-8.7-5V7z" fill="#5ee7ff" stroke="#0f4f73" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 2v20l8.7-5V7z" fill="#2fb8e8" opacity=".55"/><path d="m12 6.5 4.6 5.2h-3V17h-3.2v-5.3h-3z" fill="#fff" stroke="#0f4f73" stroke-width="1.2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 2c1 4 6.2 6 6.2 12a6.2 6.2 0 0 1-12.4 0c0-3 1.5-5 3-6.5.3 2 1.2 3 2.3 3.5C10.5 8 11 5 12 2z" fill="#ff6a1a" stroke="#7a1d00" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 12c1.6 1.5 3.1 2.6 3.1 4.7a3.1 3.1 0 0 1-6.2 0c0-1.7 1.5-2.7 3.1-4.7z" fill="#ffd23f"/></symbol>
+    <symbol id="i-swords" viewBox="0 0 24 24"><g stroke-linecap="round"><path d="m5 3.5 11 11M19 3.5l-11 11" stroke="#3a2a6e" stroke-width="4.4"/><path d="m5 3.5 11 11M19 3.5l-11 11" stroke="#eef4ff" stroke-width="2.3"/><path d="m13.5 18.5 5-5m-13 0 5 5" stroke="#3a2a6e" stroke-width="3.8"/><path d="m13.5 18.5 5-5m-13 0 5 5" stroke="#ffd23f" stroke-width="1.9"/><path d="m17.6 17.6 2.6 2.6m-13.8-2.6-2.6 2.6" stroke="#3a2a6e" stroke-width="3.6"/><path d="m17.6 17.6 2.6 2.6m-13.8-2.6-2.6 2.6" stroke="#c9782e" stroke-width="1.7"/></g></symbol>
+    <symbol id="i-chest" viewBox="0 0 24 24"><path d="M3 11h18v8.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5z" fill="#c9782e" stroke="#4a2400" stroke-width="1.6"/><path d="M3 11V9a6 5 0 0 1 6-5h6a6 5 0 0 1 6 5v2z" fill="#eb9a42" stroke="#4a2400" stroke-width="1.6"/><path d="M8 4.6V21M16 4.6V21" stroke="#ffd23f" stroke-width="1.7"/><path d="M3.8 11h16.4" stroke="#ffd23f" stroke-width="1.8"/><rect x="10" y="9.2" width="4" height="5" rx="1" fill="#ffd23f" stroke="#4a2400" stroke-width="1.3"/></symbol>
+    <symbol id="i-chest-open" viewBox="0 0 24 24"><path d="M4 11 6.2 3.8h11.6L20 11z" fill="#7a4a1e" stroke="#4a2400" stroke-width="1.6" stroke-linejoin="round"/><path d="M3 11h18v8.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5z" fill="#c9782e" stroke="#4a2400" stroke-width="1.6"/><path d="M8 11v10M16 11v10" stroke="#ffd23f" stroke-width="1.7"/><path d="M4.2 11.2h15.6" stroke="#ffe9a0" stroke-width="2.2"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><path d="M8 10.5V7.6a4 4 0 0 1 8 0v2.9" fill="none" stroke="#7a4a00" stroke-width="2.2"/><rect x="4.8" y="10" width="14.4" height="11" rx="2.6" fill="#ffd23f" stroke="#7a4a00" stroke-width="1.6"/><path d="M12 14v2.6" stroke="#7a4a00" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="3.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="m15 4-8 8 8 8" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m4.5 12.5 5 5 10-11" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2.5 2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5-4.9-4.5 6.6-.8z" fill="#ffd23f" stroke="#8a5a00" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20.5S3 15 3 8.8a4.6 4.6 0 0 1 9-2.2 4.6 4.6 0 0 1 9 2.2c0 6.2-9 11.7-9 11.7z" fill="#ff4d6d" stroke="#6e0f22" stroke-width="1.6" stroke-linejoin="round"/><path d="M6.8 8.6a2.2 2.2 0 0 1 2-1.8" stroke="#ffc2cd" stroke-width="1.6" stroke-linecap="round" fill="none"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 2.5 8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10v-6z" fill="#6ea8ff" stroke="#173a7a" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 5.2v13.6c3-1.3 5.3-3.9 5.3-7.4V7.2z" fill="#b5d2ff"/></symbol>
+    <symbol id="i-speed" viewBox="0 0 24 24"><path d="m3 5.5 8.5 6.5L3 18.5zm9 0 8.5 6.5-8.5 6.5z" fill="#7ee081" stroke="#1d5b2b" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="i-magnet" viewBox="0 0 24 24"><path d="M5.5 3h4.5v8.5a2 2 0 0 0 4 0V3h4.5v8.5a6.5 6.5 0 0 1-13 0z" fill="#ff4d6d" stroke="#6e0f22" stroke-width="1.6" stroke-linejoin="round"/><path d="M5.5 3H10v3.4H5.5zM14 3h4.5v3.4H14z" fill="#e9eef5" stroke="#6e0f22" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="i-basket" viewBox="0 0 24 24"><path d="M6.2 10a5.8 5.8 0 0 1 11.6 0" fill="none" stroke="#5a3000" stroke-width="1.9"/><path d="m7.6 9.6 1-3.2 1.9 2.4m3 0 1.9-2.4 1 3.2" fill="#ffb4c8" stroke="#7a2848" stroke-width="1.2" stroke-linejoin="round"/><path d="M2.8 10h18.4l-2 10.4a1.6 1.6 0 0 1-1.6 1.3H6.4a1.6 1.6 0 0 1-1.6-1.3z" fill="#d99a4e" stroke="#5a3000" stroke-width="1.6" stroke-linejoin="round"/><path d="M4 14.2h16M4.8 18h14.4M9.2 10l.5 11.6M14.8 10l-.5 11.6" stroke="#5a3000" stroke-width="1.1" opacity=".55"/></symbol>
+    <symbol id="i-barrel" viewBox="0 0 24 24"><path d="M6 2.5h12c1.6 3.2 1.6 15.8 0 19H6c-1.6-3.2-1.6-15.8 0-19z" fill="#c9782e" stroke="#4a2400" stroke-width="1.6" stroke-linejoin="round"/><path d="M4.9 7.6h14.2M4.9 16.4h14.2" stroke="#9aa6ba" stroke-width="2.2"/><path d="M10 2.5c-.8 4-.8 15 0 19m4-19c.8 4 .8 15 0 19" stroke="#4a2400" stroke-width="1" opacity=".45" fill="none"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M15 2.6a9.4 9.4 0 1 0 6.4 14 7.6 7.6 0 0 1-6.4-14z" fill="#c86bff" stroke="#3a1873" stroke-width="1.6" stroke-linejoin="round"/><circle cx="9" cy="10" r="1.6" fill="#a44de6"/><circle cx="11.5" cy="16" r="1.1" fill="#a44de6"/></symbol>
+    <symbol id="i-inf" viewBox="0 0 24 24"><path d="M7 8.3a3.7 3.7 0 1 0 0 7.4c3.2 0 6.8-7.4 10-7.4a3.7 3.7 0 1 1 0 7.4c-3.2 0-6.8-7.4-10-7.4z" fill="none" stroke="#0f4f73" stroke-width="4.4"/><path d="M7 8.3a3.7 3.7 0 1 0 0 7.4c3.2 0 6.8-7.4 10-7.4a3.7 3.7 0 1 1 0 7.4c-3.2 0-6.8-7.4-10-7.4z" fill="none" stroke="#5ee7ff" stroke-width="2.2"/></symbol>
+    <symbol id="i-tower" viewBox="0 0 24 24"><path d="M6 21.5V9.5H4v-6h3v2h2.2v-2h5.6v2H17v-2h3v6h-2v12z" fill="#9b8cff" stroke="#2b1f5a" stroke-width="1.6" stroke-linejoin="round"/><path d="M10.3 21.5v-4a1.7 1.7 0 0 1 3.4 0v4z" fill="#2b1f5a"/><path d="M11 11h2v2.6h-2z" fill="#ffd23f"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#ece8ff" stroke="#3a2a6e" stroke-width="1.6"/><path d="M12 7v5.3l3.4 2" stroke="#3a2a6e" stroke-width="2" fill="none" stroke-linecap="round"/></symbol>
+  </svg>
+
+  <canvas id="game"></canvas>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div class="xpbar"><div id="xpfill"></div><span id="lvl">Ур. 1</span></div>
+    <div class="toprow">
+      <div class="hpbox">
+        <div class="hp"><div id="hpfill"></div><span id="hptext">100 / 100</span></div>
+        <div class="cats" id="catcount">🐱 × 2</div>
+      </div>
+      <div class="timerbox">
+        <div id="timer">00:00</div>
+        <div class="runbar"><div id="runfill"></div><span class="bossmark" title="Босс">👑</span></div>
+      </div>
+      <div class="rightbox">
+        <div id="kills">☠ 0</div>
+        <button id="pauseBtn" aria-label="Пауза">❚❚</button>
+      </div>
+    </div>
+    <div id="bossbar" class="hidden">
+      <div class="bname">Крысиный Король Мракус</div>
+      <div class="bbar"><div id="bossfill"></div></div>
+    </div>
+  </div>
+
+  <div id="banner"></div>
+
+  <!-- Lobby (lobby.js renders the dynamic parts) -->
+  <div id="menu" class="screen lobby">
+    <header class="lb-top">
+      <button class="lb-profile" id="lbProfile" aria-label="Профиль и настройки">
+        <span class="lb-ava" id="lbAva"></span>
+        <span class="lb-pinfo">
+          <span class="lb-pname" id="lbName">Маг</span>
+          <span class="lb-plvl"><b id="lbLvl">1</b><span class="lb-xpbar"><i id="lbXp"></i></span></span>
+        </span>
+      </button>
+      <div class="lb-res">
+        <button class="lb-pill energy" id="lbEnergyPill" aria-label="Энергия"><span class="ic"><svg><use href="#i-bolt"/></svg></span><span id="lbEnergy">30/30</span><small id="lbEnergyT"></small><span class="plus"><svg><use href="#i-plus"/></svg></span></button>
+        <button class="lb-pill coins" data-goto="shop" aria-label="Рыбки"><span class="ic"><svg><use href="#i-fish"/></svg></span><span id="lbCoins">0</span><span class="plus"><svg><use href="#i-plus"/></svg></span></button>
+        <button class="lb-pill gems" data-goto="shop" aria-label="Кристаллы"><span class="ic"><svg><use href="#i-gem"/></svg></span><span id="lbGems">0</span><span class="plus"><svg><use href="#i-plus"/></svg></span></button>
+      </div>
+    </header>
+
+    <main class="lb-main">
+      <!-- Battle -->
+      <section class="lb-view battle" data-view="battle">
+        <div class="lb-chapter" id="lbChapter">
+          <div class="lb-chcard" id="lbChCard">
+            <div class="lb-chart" id="lbChArt"></div>
+            <button class="lb-arrow prev" id="lbPrev" aria-label="Предыдущая глава"><svg><use href="#i-chev"/></svg></button>
+            <button class="lb-arrow next" id="lbNext" aria-label="Следующая глава"><svg><use href="#i-chev"/></svg></button>
+            <div class="lb-chinfo">
+              <div class="lb-chnum" id="lbChNum">Глава 1</div>
+              <div class="lb-chname" id="lbChName">Мятная долина</div>
+              <div class="lb-chmeta" id="lbChMeta"></div>
+            </div>
+          </div>
+          <div class="lb-chdots" id="lbChDots"></div>
+        </div>
+
+        <div class="lb-stage">
+          <div class="lb-side left">
+            <button class="lb-round" id="lbDailyBtn"><span><svg><use href="#i-gift"/></svg></span><em>Награда</em><i class="dot hidden" id="lbDailyDot"></i></button>
+            <button class="lb-round" id="lbQuestBtn"><span><svg><use href="#i-scroll"/></svg></span><em>Задания</em><i class="dot hidden" id="lbQuestDot"></i></button>
+          </div>
+          <div class="lb-side right">
+            <button class="lb-round" id="lbStatsBtn"><span><svg><use href="#i-trophy"/></svg></span><em>Рекорды</em></button>
+            <button class="lb-round" id="lbSoundBtn"><span><svg><use id="lbSoundIc" href="#i-sound"/></svg></span><em>Звук</em></button>
+          </div>
+        </div>
+
+        <div class="lb-bottom">
+          <div class="lb-miles" id="lbMiles"></div>
+          <button class="lb-leader" data-goto="squad" id="lbLeader"></button>
+          <button class="lb-play" id="lbPlay"><span class="t">В бой</span><span class="c"><svg><use href="#i-bolt"/></svg><b id="lbCost">5</b></span></button>
+          <div id="best" class="best"></div>
+        </div>
+      </section>
+
+      <!-- Shop -->
+      <section class="lb-view panelview hidden" data-view="shop">
+        <h3 class="lb-h"><span>Лавка</span></h3>
+        <div class="lb-scroll" id="lbShop"></div>
+      </section>
+
+      <!-- Squad -->
+      <section class="lb-view panelview hidden" data-view="squad">
+        <h3 class="lb-h"><span>Отряд</span> <small id="lbPower"></small></h3>
+        <div class="lb-scroll"><div class="lb-cats" id="lbCats"></div></div>
+      </section>
+
+      <!-- Evolution -->
+      <section class="lb-view panelview hidden" data-view="evolve">
+        <h3 class="lb-h"><span>Эволюция</span></h3>
+        <div class="lb-scroll" id="lbTalents"></div>
+      </section>
+
+      <!-- Challenges -->
+      <section class="lb-view panelview hidden" data-view="challenge">
+        <h3 class="lb-h"><span>Испытания</span></h3>
+        <div class="lb-scroll" id="lbChallenges"></div>
+      </section>
+    </main>
+
+    <nav class="lb-nav">
+      <button data-tab="shop"><span><svg><use href="#i-bag"/></svg></span><em>Лавка</em></button>
+      <button data-tab="squad"><span><svg><use href="#i-paw"/></svg></span><em>Отряд</em></button>
+      <button data-tab="battle" class="main active"><span><svg><use href="#i-swords"/></svg></span><em>Бой</em></button>
+      <button data-tab="evolve"><span><svg><use href="#i-evolve"/></svg></span><em>Эволюция</em></button>
+      <button data-tab="challenge"><span><svg><use href="#i-flame"/></svg></span><em>Испытания</em></button>
+    </nav>
+  </div>
+
+  <!-- Lobby modal + toast -->
+  <div id="lbModal" class="lb-modal hidden" role="dialog" aria-modal="true">
+    <div class="lb-mpanel">
+      <button class="lb-mclose" id="lbMClose" aria-label="Закрыть">✕</button>
+      <div id="lbMBody"></div>
+    </div>
+  </div>
+  <div id="lbToast" class="lb-toast"></div>
+
+  <!-- Level up -->
+  <div id="levelup" class="screen hidden">
+    <div class="lu-wrap">
+      <h2>Новый уровень!</h2>
+      <p class="sub">Выбери 1 из 3</p>
+      <div id="cards"></div>
+    </div>
+  </div>
+
+  <!-- Pause -->
+  <div id="pause" class="screen hidden">
+    <div class="panel">
+      <h2>Пауза</h2>
+      <div id="buildList" class="buildlist"></div>
+      <button id="resumeBtn" class="btn primary">Продолжить</button>
+      <button id="quitBtn" class="btn ghost">Выйти в лобби</button>
+    </div>
+  </div>
+
+  <!-- Game over / victory -->
+  <div id="over" class="screen hidden">
+    <div class="panel">
+      <h2 id="overTitle">Забег окончен</h2>
+      <p id="overSub" class="sub"></p>
+      <div id="overStats" class="stats"></div>
+      <div id="overRewards" class="rewards"></div>
+      <button id="againBtn" class="btn primary">Ещё забег</button>
+      <button id="menuBtn" class="btn ghost">В лобби</button>
+    </div>
+  </div>
+
+  <script src="/lobby.js"></script>
+  <script src="/game.js"></script>
+</body>
+</html>
