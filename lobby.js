@@ -127,51 +127,119 @@
   // ---------------------------------------------------------------- chapter art (inline SVG scenes)
   const hex = (h) => [1, 3, 5].map((k) => parseInt(h.slice(k, k + 2), 16));
   const mix = (a, b, t) => { const x = hex(a), y = hex(b); return `rgb(${x.map((v, k) => Math.round(v + (y[k] - v) * t)).join(',')})`; };
-  const SCENES = [
-    // 0 meadow: rolling hills, grass, a big mint leaf
-    (c) => ({
-      back: `<path d="M0 96 Q50 70 105 88 T215 82 T340 90 V150 H0z" fill="${mix(c, '#0b0718', 0.45)}"/>`,
-      emblem: `<path d="M170 26c30 9 38 44 14 70-6 6-14 8-14 8s-8-2-14-8c-24-26-16-61 14-70z" fill="#7ee081" stroke="#174a24" stroke-width="3.5" stroke-linejoin="round"/><path d="M170 36v66M170 58l-12-9M170 74l13-10M170 88l-10-7" stroke="#174a24" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M160 40c-8 8-10 20-6 30" stroke="#c9ffcb" stroke-width="3" stroke-linecap="round" fill="none"/>`,
-      front: Array.from({ length: 14 }, (_, k) => { const x = 10 + k * 24 + (k % 3) * 5, y = 128 - (k % 2) * 4; return `<path d="M${x} ${y + 8}l3-12 2 9 4-14 2 17" fill="none" stroke="${mix(c, '#ffffff', 0.15)}" stroke-width="2" stroke-linecap="round" opacity=".7"/>`; }).join(''),
-    }),
-    // 1 cheese catacombs: stone arches and a cheese wedge
-    (c) => ({
-      back: [30, 250].map((x) => `<path d="M${x} 150V88a30 30 0 0 1 60 0V150z" fill="${mix(c, '#0b0718', 0.5)}"/><path d="M${x + 12} 150V92a18 18 0 0 1 36 0V150z" fill="${mix(c, '#0b0718', 0.82)}"/>`).join(''),
-      emblem: `<path d="M126 100 214 100 214 62z" fill="#ffd23f" stroke="#6b4300" stroke-width="3.5" stroke-linejoin="round"/><path d="M126 100 214 62 214 46 126 86z" fill="#ffe98a" stroke="#6b4300" stroke-width="3.5" stroke-linejoin="round"/><g fill="#d99a1e"><circle cx="190" cy="86" r="6"/><circle cx="168" cy="93" r="4"/><circle cx="204" cy="76" r="3.5"/></g>`,
-      front: '',
-    }),
-    // 2 ice attic: roof beams, icicles, a snowflake
-    (c) => ({
-      back: `<path d="M-10 150 170 34 350 150z" fill="${mix(c, '#0b0718', 0.6)}"/><path d="M20 150 170 52 320 150z" fill="${mix(c, '#0b0718', 0.8)}"/>`,
-      emblem: `<g transform="translate(170 66)" stroke-linecap="round">${[0, 60, 120].map((a) => `<g transform="rotate(${a})"><path d="M0-36V36M-9-27 0-18 9-27M-9 27 0 18 9 27" fill="none" stroke="#0f3f63" stroke-width="9"/><path d="M0-36V36M-9-27 0-18 9-27M-9 27 0 18 9 27" fill="none" stroke="#e6faff" stroke-width="4.5"/></g>`).join('')}</g>`,
-      front: Array.from({ length: 22 }, (_, k) => `<circle cx="${(k * 53) % 340}" cy="${(k * 37) % 120 + 6}" r="${1 + (k % 3) * 0.6}" fill="#fff" opacity=".7"/>`).join(''),
-    }),
-    // 3 storm roofs: city rooftops, clouds and a lightning bolt
-    (c) => ({
-      back: `<path d="M0 150V104h28V86h10v18h30V94l22-16 22 16v56zM122 150V98h42v-14h10v14h34v52zM210 150V90l26-18 26 18v-6h10v6h14v8h54v52z" fill="${mix(c, '#0b0718', 0.55)}"/><g fill="${mix(c, '#ffffff', 0.25)}" opacity=".55"><ellipse cx="70" cy="30" rx="48" ry="14"/><ellipse cx="280" cy="24" rx="56" ry="15"/></g>`,
-      emblem: `<path d="M182 16 140 74h26l-8 44 44-62h-26z" fill="#ffd23f" stroke="#6b4300" stroke-width="3.5" stroke-linejoin="round"/><path d="M174 30 154 60" stroke="#fff6c2" stroke-width="4" stroke-linecap="round"/>`,
-      front: Array.from({ length: 18 }, (_, k) => { const x = (k * 41) % 340, y = (k * 29) % 110; return `<path d="M${x} ${y}l-5 12" stroke="#cfe3ff" stroke-width="1.5" opacity=".45"/>`; }).join(''),
-    }),
-    // 4 Mrakus' throne: castle silhouette and a crown
-    (c) => ({
-      back: `<path d="M40 150V84h-8V68h12v8h8v-8h12v16h-8v22h40V60h-8V44h12v8h8v-8h12v8h8v-8h12v16h-8v46h40V84h-8V68h12v8h8v-8h12v16h-8v66z" fill="${mix(c, '#0b0718', 0.6)}" transform="translate(70 0)"/>`,
-      emblem: `<path d="M132 96 124 46l26 20 20-34 20 34 26-20-8 50z" fill="#ffd23f" stroke="#6b4300" stroke-width="3.5" stroke-linejoin="round"/><rect x="130" y="94" width="80" height="12" rx="4" fill="#e0a52e" stroke="#6b4300" stroke-width="3.5"/><g fill="#ff4d6d" stroke="#6b0f22" stroke-width="2"><circle cx="170" cy="74" r="6"/><circle cx="146" cy="80" r="4"/><circle cx="194" cy="80" r="4"/></g>`,
-      front: Array.from({ length: 12 }, (_, k) => `<circle cx="${(k * 61) % 340}" cy="${150 - ((k * 23) % 50)}" r="${1.5 + (k % 3)}" fill="#ff9a6b" opacity=".55"/>`).join(''),
-    }),
+  // Chapter islands: chunky outlined dioramas standing on a slab tinted with the chapter colour
+  const OL = 'stroke="#0b0718" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"';
+  const OS = 'stroke="#0b0718" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"';
+  const ISLES = [
+    // 1 — mint valley: shop street with a zombie mouse
+    () => `
+      <rect x="15" y="198" width="270" height="24" fill="#8a84b0"/>
+      <path d="M36 210h22M82 210h22M128 210h22M174 210h22M250 210h18" stroke="#e9e6ff" stroke-width="4" stroke-linecap="round"/>
+      <rect x="92" y="34" width="62" height="152" rx="7" fill="#6d6796" ${OL}/>
+      <rect x="98" y="40" width="10" height="140" rx="4" fill="#fff" opacity=".12"/>
+      <path d="M140 62h76l12 12v112h-88z" fill="#8f8ab8" ${OL}/>
+      <path d="M172 88h12v14h-12zM192 88h12v14h-12zM212 88h10v14h-10zM172 114h12v14h-12zM192 114h12v14h-12z" fill="#5d5888"/>
+      <rect x="38" y="84" width="118" height="112" rx="9" fill="#dcd9f0" ${OL}/>
+      <rect x="50" y="96" width="94" height="34" rx="6" fill="#b9e6ff" ${OS}/>
+      <path d="M58 122l14-20h12l-14 20z" fill="#fff" opacity=".7"/>
+      <rect x="52" y="138" width="90" height="7" rx="3.5" fill="#b3aed6"/>
+      <rect x="60" y="172" width="74" height="24" fill="#3b3560"/>
+      <path d="M44 156h106v14q-8.8 7-17.7 0-8.8 7-17.6 0-8.9 7-17.7 0-8.8 7-17.7 0-8.8 7-17.6 0-8.9 7-17.7 0z" fill="#fff" ${OS}/>
+      <path d="M61.7 158h17.6v12q-8.8 6-17.6 0zM97 158h17.7v12q-8.9 6-17.7 0zM132.3 158H150v12q-8.8 6-17.7 0z" fill="#3fae5a"/>
+      <path d="M18 200l10-24 16 6 8 18z" fill="#b9b4d6" ${OS}/>
+      <rect x="250" y="158" width="10" height="34" rx="2" fill="#7a4a2a" ${OS}/>
+      <path d="M255 86c20 0 26 32 26 48s-10 30-26 30-26-14-26-30 6-48 26-48z" fill="#2f8f4a" ${OL}/>
+      <path d="M246 108q4-12 10-12" fill="none" stroke="#7ee081" stroke-width="5" stroke-linecap="round"/>
+      <path d="M150 226q4-12 8 0 4-10 8 0z" fill="#7ee081" ${OS}/>
+      <circle cx="207" cy="152" r="9" fill="#9ad3a0" ${OS}/><circle cx="239" cy="152" r="9" fill="#9ad3a0" ${OS}/>
+      <rect x="208" y="186" width="30" height="22" rx="5" fill="#4a7bd8" ${OS}/>
+      <path d="M238 198h12" fill="none" ${OS}/>
+      <rect x="203" y="152" width="40" height="36" rx="12" fill="#9ad3a0" ${OL}/>
+      <circle cx="215" cy="167" r="6.5" fill="#fff" ${OS}/><circle cx="232" cy="167" r="6.5" fill="#fff" ${OS}/>
+      <circle cx="216" cy="168" r="2" fill="#0b0718"/><circle cx="231" cy="166" r="2" fill="#0b0718"/>
+      <path d="M214 208v6M232 208v6" ${OS}/>`,
+    // 2 — cheese catacombs: giant wedge and a crypt entrance
+    () => `
+      <ellipse cx="60" cy="220" rx="13" ry="5" fill="#c98a1c"/><ellipse cx="236" cy="206" rx="10" ry="4" fill="#c98a1c"/><ellipse cx="176" cy="224" rx="8" ry="3" fill="#c98a1c"/>
+      <path d="M100 190v-70l146-74q16-6 16 10v134z" fill="#ffcf3f" ${OL}/>
+      <path d="M100 120l146-74q16-6 16 10v12L100 138z" fill="#ffe98a"/>
+      <circle cx="150" cy="158" r="12" fill="#e0a52e" ${OS}/><circle cx="208" cy="112" r="15" fill="#e0a52e" ${OS}/>
+      <circle cx="232" cy="164" r="9" fill="#e0a52e" ${OS}/><circle cx="178" cy="126" r="6" fill="#e0a52e" ${OS}/>
+      <path d="M30 204v-66q0-42 46-42t46 42v66z" fill="#9a94b8" ${OL}/>
+      <path d="M36 150h14M102 150h14M40 176h12M100 176h12M62 104v12M90 104v12" stroke="#6d6796" stroke-width="4" stroke-linecap="round"/>
+      <path d="M50 204v-60q0-26 26-26t26 26v60z" fill="#1b1432" ${OS}/>
+      <circle cx="68" cy="168" r="4" fill="#ffd166"/><circle cx="84" cy="168" r="4" fill="#ffd166"/>
+      <path d="M134 204v-34" ${OL}/><path d="M134 146q10 12 0 24-10-12 0-24z" fill="#ff8a3d" ${OS}/>
+      <rect x="160" y="178" width="30" height="32" rx="7" fill="#a8683a" ${OS}/>
+      <path d="M160 188h30M160 200h30" stroke="#0b0718" stroke-width="3"/>
+      <path d="M206 218l58-28v28z" fill="#ffe27a" ${OS}/>
+      <circle cx="246" cy="208" r="4" fill="#e0a52e"/>`,
+    // 3 — icy attic: snowed-in house, pine and a snowman
+    () => `
+      <ellipse cx="64" cy="222" rx="30" ry="6" fill="#fff"/><ellipse cx="226" cy="224" rx="36" ry="6" fill="#fff"/>
+      <rect x="182" y="44" width="16" height="40" fill="#8a5a48" ${OS}/>
+      <rect x="72" y="112" width="136" height="88" fill="#b07a5e" ${OL}/>
+      <path d="M72 140h136M72 168h136" stroke="#8a5a48" stroke-width="3"/>
+      <rect x="124" y="150" width="32" height="50" rx="5" fill="#6b4030" ${OS}/><circle cx="149" cy="176" r="2.5" fill="#ffd166"/>
+      <rect x="84" y="150" width="26" height="24" rx="3" fill="#ffe27a" ${OS}/><rect x="170" y="150" width="26" height="24" rx="3" fill="#ffe27a" ${OS}/>
+      <path d="M54 116l86-84 86 84z" fill="#5a6fb8" ${OL}/>
+      <path d="M140 32l-46 45q12 12 22 0 12 14 24 0 12 14 24 0 10 12 22 0z" fill="#fff" ${OS}/>
+      <circle cx="140" cy="94" r="13" fill="#ffe27a" ${OS}/><path d="M140 81v26M127 94h26" stroke="#0b0718" stroke-width="3"/>
+      <path d="M70 117l5 16 5-16zM92 117l5 22 5-22zM178 117l5 22 5-22zM200 117l5 16 5-16z" fill="#dff6ff" ${OS}/>
+      <rect x="243" y="176" width="10" height="24" fill="#7a4a2a" ${OS}/>
+      <path d="M248 84l24 40h-12l20 36h-64l20-36h-12z" fill="#3f8f7a" ${OL}/>
+      <path d="M248 84l12 20q-12 8-24 0z" fill="#fff" ${OS}/>
+      <circle cx="38" cy="194" r="17" fill="#fff" ${OL}/><circle cx="38" cy="166" r="12" fill="#fff" ${OL}/>
+      <circle cx="34" cy="163" r="2" fill="#0b0718"/><circle cx="43" cy="163" r="2" fill="#0b0718"/><path d="M38 168l12 3-12 3z" fill="#ff8a3d" ${OS}/>
+      <path d="M222 60q10-16 18 0 6-4 8 0 2-4 8 0 8-16 18 0-12 0-14 12-6-6-12 0-6-6-12 0-2-12-14-12z" fill="#3b3560" ${OS}/>`,
+    // 4 — storm rooftops: gabled houses under a thundercloud
+    () => `
+      <path d="M40 226l8-14M96 228l8-14M150 228l8-14M214 226l8-14M262 224l6-12" stroke="#e9e6ff" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+      <rect x="156" y="30" width="16" height="36" fill="#463a8c" ${OS}/>
+      <rect x="100" y="76" width="82" height="124" fill="#7466c4" ${OL}/>
+      <path d="M90 80l51-50 51 50z" fill="#3d3180" ${OL}/>
+      <path d="M114 96h18v20h-18zM150 96h18v20h-18zM114 132h18v20h-18zM150 132h18v20h-18z" fill="#ffe27a" ${OS}/>
+      <rect x="130" y="170" width="22" height="30" rx="3" fill="#2a2058" ${OS}/>
+      <rect x="28" y="126" width="76" height="74" fill="#5b4f9a" ${OL}/>
+      <path d="M20 130l46-44 46 44z" fill="#463a8c" ${OL}/>
+      <path d="M42 146h18v20H42zM72 146h18v20H72z" fill="#ffe27a" ${OS}/>
+      <path d="M36 108l16-16M92 108L76 92" stroke="#6f62b8" stroke-width="4" stroke-linecap="round"/>
+      <rect x="178" y="118" width="84" height="82" fill="#5b4f9a" ${OL}/>
+      <path d="M170 122l50-42 50 42z" fill="#463a8c" ${OL}/>
+      <path d="M192 140h18v20h-18zM230 140h18v20h-18z" fill="#ffe27a" ${OS}/>
+      <rect x="208" y="170" width="22" height="30" rx="3" fill="#2a2058" ${OS}/>
+      <path d="M246 100V70M238 76h16M241 84h10" fill="none" ${OS}/>
+      <path d="M186 44q0-16 18-14 8-16 28-6 22-6 24 14 16 2 12 16-2 10-16 10h-56q-18 0-10-20z" fill="#3b3560" ${OL}/>
+      <path d="M198 40q8-6 16-2" fill="none" stroke="#6f62b8" stroke-width="4" stroke-linecap="round"/>
+      <path d="M232 52l-16 30h13l-9 28 30-38h-14l10-20z" fill="#ffd166" ${OS}/>`,
+    // 5 — Mrakus' throne: crowned keep with a red carpet
+    () => `
+      <path d="M128 200h44l12 32h-68z" fill="#ff4d6d"/><path d="M134 200l-8 32M166 200l8 32" stroke="#ffd166" stroke-width="3"/>
+      <rect x="38" y="86" width="54" height="114" fill="#4a3a6e" ${OL}/>
+      <path d="M32 90V66h14v10h12V66h14v10h12V66h14v24z" fill="#5d4c86" ${OL}/>
+      <rect x="208" y="86" width="54" height="114" fill="#4a3a6e" ${OL}/>
+      <path d="M202 90V66h14v10h12V66h14v10h12V66h14v24z" fill="#5d4c86" ${OL}/>
+      <path d="M60 112q5-8 10 0v20H60zM230 112q5-8 10 0v20h-10z" fill="#ff4d6d" ${OS}/>
+      <path d="M52 146h26v32l-13-9-13 9zM222 146h26v32l-13-9-13 9z" fill="#ff4d6d" ${OS}/>
+      <rect x="86" y="110" width="128" height="90" fill="#5d4c86" ${OL}/>
+      <path d="M82 114V96h16v8h14v-8h16v8h44v-8h16v8h14v-8h16v18z" fill="#6f5e9c" ${OL}/>
+      <path d="M124 200v-36q0-26 26-26t26 26v36z" fill="#1b1432" ${OS}/>
+      <path d="M138 200v-26h24v26zM134 174q16-18 32 0z" fill="#ffd166" ${OS}/>
+      <path d="M104 200v-30M196 200v-30" ${OL}/>
+      <path d="M104 148q10 12 0 24-10-12 0-24zM196 148q10 12 0 24-10-12 0-24z" fill="#ff8a3d" ${OS}/>
+      <path d="M116 98l-8-42 24 20 18-32 18 32 24-20-8 42z" fill="#ffd166" ${OL}/>
+      <circle cx="150" cy="80" r="6" fill="#ff4d6d" ${OS}/><circle cx="128" cy="86" r="4" fill="#5ee7ff" ${OS}/><circle cx="172" cy="86" r="4" fill="#5ee7ff" ${OS}/>
+      <circle cx="34" cy="214" r="9" fill="#f4efff" ${OS}/><circle cx="31" cy="213" r="2" fill="#0b0718"/><circle cx="37" cy="213" r="2" fill="#0b0718"/>
+      <path d="M258 222l8-18 10 18z" fill="#3a2a52" ${OS}/>`,
   ];
+  const ISLE_GROUND = ['#8fe07a', '#f3c64a', '#c9f0ff', '#8a7ccf', '#8a2f52'];
   function chapterArt(i) {
-    const c = CHAPTERS[i].color, sc = SCENES[i % SCENES.length](c);
-    const stars = Array.from({ length: 16 }, (_, k) => `<circle cx="${(k * 89 + 17) % 340}" cy="${(k * 47 + 9) % 70}" r="${k % 4 ? 0.9 : 1.6}" fill="#fff" opacity="${0.35 + (k % 3) * 0.2}"/>`).join('');
-    return `<svg viewBox="0 0 340 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <defs><linearGradient id="lbSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${mix(c, '#07040f', 0.78)}"/><stop offset="1" stop-color="${mix(c, '#150f26', 0.35)}"/></linearGradient>
-      <radialGradient id="lbGlow"><stop offset="0" stop-color="${c}" stop-opacity=".9"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient></defs>
-      <rect width="340" height="150" fill="url(#lbSky)"/>${stars}
-      <circle cx="170" cy="70" r="78" fill="url(#lbGlow)" opacity=".55"/>
-      ${sc.back}
-      <path d="M0 122 Q85 104 170 116 T340 112 V150 H0z" fill="${mix(c, '#0b0718', 0.72)}"/>
-      <ellipse cx="170" cy="118" rx="56" ry="9" fill="#000" opacity=".35"/>
-      <g class="emb">${sc.emblem}</g>
-      ${sc.front}
+    const k = i % ISLES.length, top = ISLE_GROUND[k], side = mix(top, '#0b0718', 0.42);
+    return `<svg viewBox="0 0 300 266" aria-hidden="true">
+      <path d="M12 178q0-10 10-10h256q10 0 10 10v60q0 9-9 9h-97l-22 12-22-12H21q-9 0-9-9z" fill="${side}" ${OL}/>
+      <path d="M15 180q0-9 9-9h252q9 0 9 9v46q0 6-6 6H21q-6 0-6-6z" fill="${top}"/>
+      <path d="M15 180q0-9 9-9h252q9 0 9 9v3H15z" fill="#fff" opacity=".25"/>
+      ${ISLES[k]()}
     </svg>`;
   }
 
@@ -265,8 +333,14 @@
     document.querySelectorAll('.lb-nav button').forEach((b) => b.addEventListener('click', () => setTab(b.dataset.tab)));
     document.querySelectorAll('[data-goto]').forEach((b) => b.addEventListener('click', () => setTab(b.dataset.goto)));
     $('lbPlay').addEventListener('click', () => { runCtx = { chapter: P.chapter, challenge: false }; api.requestRun(); });
-    $('lbPrev').addEventListener('click', () => shiftChapter(-1));
-    $('lbNext').addEventListener('click', () => shiftChapter(1));
+    $('lbChArt').addEventListener('click', openPick);
+    $('lbChest').addEventListener('click', openChest);
+    $('lbPickBack').addEventListener('click', () => { MS.sfx.click(); closePick(); });
+    $('lbPickGo').addEventListener('click', confirmPick);
+    $('lbPickRail').addEventListener('scroll', () => {
+      const k = Math.max(0, Math.min(CHAPTERS.length - 1, Math.round($('lbPickRail').scrollLeft / pickStep())));
+      if (k !== pickIdx) { pickIdx = k; MS.sfx.click(); renderPick(); }
+    }, { passive: true });
     $('lbEnergyPill').addEventListener('click', () => openEnergy(false));
     $('lbDailyBtn').addEventListener('click', openDaily);
     $('lbQuestBtn').addEventListener('click', openQuests);
@@ -275,12 +349,13 @@
     $('lbSoundBtn').addEventListener('click', () => { MS.sfx.toggle(); renderTop(); });
     $('lbMClose').addEventListener('click', closeModal);
     $('lbModal').addEventListener('click', (e) => { if (e.target.id === 'lbModal') closeModal(); });
-    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
-    // swipe between chapters on the stage
-    let sx = null;
-    const stage = document.querySelector('.lb-chapter');
-    stage.addEventListener('pointerdown', (e) => { sx = e.clientX; });
-    stage.addEventListener('pointerup', (e) => { if (sx != null && Math.abs(e.clientX - sx) > 50) shiftChapter(e.clientX < sx ? 1 : -1); sx = null; });
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { closeModal(); closePick(); }
+      if (!pickOpen()) return;
+      if (e.key === 'ArrowLeft') pickScroll(pickIdx - 1, true);
+      else if (e.key === 'ArrowRight') pickScroll(pickIdx + 1, true);
+      else if (e.key === 'Enter') confirmPick();
+    });
   }
 
   function setTab(t) {
@@ -291,14 +366,67 @@
     $('menu').classList.toggle('dim', t !== 'battle');
     renderTab();
   }
-  function shiftChapter(d) {
-    const n = P.chapter + d;
-    if (n < 0 || n >= CHAPTERS.length) return;
-    P.chapter = n; runCtx = { chapter: n, challenge: false }; save();
+  // ---------------------------------------------------------------- chapter picker
+  let pickIdx = 0;
+  const pickOpen = () => !$('lbPick').classList.contains('hidden');
+  const pickStep = () => { const r = $('lbPickRail').children; return r.length > 1 ? r[1].offsetLeft - r[0].offsetLeft : 1; };
+  function openPick() {
     MS.sfx.click();
+    pickIdx = P.chapter;
+    const rail = $('lbPickRail');
+    rail.innerHTML = '';
+    CHAPTERS.forEach((c, k) => {
+      const b = el(`<button class="lb-pickisle${k > P.unlocked ? ' locked' : ''}" aria-label="Глава ${k + 1}: ${esc(c.name)}">${chapterArt(k)}</button>`);
+      b.addEventListener('click', () => (k === pickIdx ? confirmPick() : pickScroll(k, true)));
+      rail.appendChild(b);
+    });
+    $('lbPick').classList.remove('hidden');
+    pickScroll(pickIdx, false);
+    renderPick();
+  }
+  function closePick() { $('lbPick').classList.add('hidden'); }
+  function pickScroll(k, smooth) {
+    if (k < 0 || k >= CHAPTERS.length) return;
+    $('lbPickRail').scrollTo({ left: k * pickStep(), behavior: smooth ? 'smooth' : 'instant' });
+  }
+  function renderPick() {
+    const i = pickIdx, ch = CHAPTERS[i], locked = i > P.unlocked, best = P.best[i] || 0;
+    $('lbPickName').textContent = `${i + 1}. ${ch.name}`;
+    const state = locked ? `${I('lock')}Победи в главе ${i}, чтобы открыть`
+      : best >= 360 ? `${I('check')}Пройдено` : `Рекорд: ${best ? fmtClock(best) : '—'}`;
+    $('lbPickDesc').innerHTML = `<p>${esc(ch.desc)}…</p><small><span>${state}</span><span>Враги ×${ch.enemyHp} · награды ×${ch.reward}</span></small>`;
+    const go = $('lbPickGo');
+    go.disabled = locked;
+    go.textContent = locked ? 'Закрыто' : 'Выбрать';
+    [...$('lbPickRail').children].forEach((b, k) => b.classList.toggle('on', k === i));
+  }
+  function confirmPick() {
+    if (pickIdx > P.unlocked) return toast('Глава ещё закрыта');
+    P.chapter = pickIdx; runCtx = { chapter: pickIdx, challenge: false }; save();
+    MS.sfx.choose();
+    closePick();
     renderBattle();
-    const card = $('lbChCard');
-    card.classList.remove('slide-l', 'slide-r'); void card.offsetWidth; card.classList.add(d > 0 ? 'slide-l' : 'slide-r');
+    const art = $('lbChArt');
+    art.classList.remove('pop'); void art.offsetWidth; art.classList.add('pop');
+  }
+
+  // chapter chest: the three survival milestones of the selected chapter
+  function openChest() {
+    const i = P.chapter, ch = CHAPTERS[i], best = P.best[i] || 0;
+    const body = el(`<div class="lb-rwm"><h4>Сундук главы</h4>
+      <p class="lb-lead">${i + 1}. ${esc(ch.name)} · рекорд ${best ? fmtClock(best) : '—'}</p><div class="lb-quests"></div></div>`);
+    MILES.forEach((m, k) => {
+      const id = `${i}-${k}`, r = scaled(m, ch), claimed = !!P.chests[id], reached = best >= m.t;
+      const row = el(`<div class="q ${claimed ? 'claimed' : ''}"><span class="lb-chic">${I(claimed ? 'chest-open' : 'chest')}</span>
+        <div class="tx"><b>${m.win ? 'Победи в главе' : 'Продержись ' + m.label}</b><div class="val">${rewardText(r)}</div></div>
+        <button class="lb-btn gold sm" ${reached && !claimed ? '' : 'disabled'}>${claimed ? 'Получено' : reached ? 'Забрать' : I('lock') + fmtClock(m.t)}</button></div>`);
+      row.querySelector('button').addEventListener('click', () => {
+        P.chests[id] = true; grant(r); save(); MS.sfx.choose();
+        render(); rewardModal('Сундук главы', r);
+      });
+      body.querySelector('.lb-quests').appendChild(row);
+    });
+    openModal(body);
   }
 
   // ---------------------------------------------------------------- rendering
@@ -333,7 +461,6 @@
   function renderBattle() {
     const i = P.chapter, ch = CHAPTERS[i], locked = i > P.unlocked;
     const best = P.best[i] || 0;
-    $('lbChNum').textContent = `Глава ${i + 1}`;
     $('lbChName').textContent = `${i + 1}. ${ch.name}`;
     const card = $('lbChCard');
     card.style.setProperty('--cc', ch.color);
@@ -343,29 +470,12 @@
     $('lbChMeta').innerHTML = locked
       ? `<span class="lb-tag lock">${I('lock')}Победи в главе ${i}, чтобы открыть</span>`
       : `<span class="desc">${esc(ch.desc)}</span><span class="lb-tag ${best >= 360 ? 'ok' : ''}">${best >= 360 ? I('check') + 'Пройдено' : best ? 'Рекорд: ' + fmtClock(best) : 'Рекорд: —'}</span>`;
-    $('lbChDots').innerHTML = CHAPTERS.map((c, k) => `<i class="${k === i ? 'on' : ''} ${k > P.unlocked ? 'lk' : ''}" style="--cc:${c.color}"></i>`).join('');
-    $('lbPrev').disabled = i === 0;
-    $('lbNext').disabled = i === CHAPTERS.length - 1;
-
-    // milestone chests
-    const miles = $('lbMiles');
-    miles.innerHTML = `<div class="hd"><span>Награды главы</span><small>${locked ? 'Глава закрыта' : `Продержись ${fmtClock(Math.min(best, 360))} / 6:00`}</small></div><div class="rail"><div class="track"><i style="width:${Math.min(100, (100 * best) / 360)}%"></i></div></div>`;
-    MILES.forEach((m, k) => {
-      const id = `${i}-${k}`;
-      const reached = best >= m.t, claimed = !!P.chests[id];
-      const b = document.createElement('button');
-      b.className = 'chest' + (claimed ? ' claimed' : reached ? ' ready' : '');
-      b.style.left = `${(100 * m.t) / 360}%`;
-      b.innerHTML = `<span>${I(claimed ? 'chest-open' : 'chest')}${claimed ? `<b class="ok">${I('check')}</b>` : ''}</span><em>${m.label}</em>`;
-      b.addEventListener('click', () => {
-        if (claimed) return toast('Награда уже получена');
-        if (!reached) return toast(`Продержись ${m.label === 'Победа' ? 'до конца главы' : m.label}: ${rewardText(scaled(m, ch))}`);
-        const r = scaled(m, ch);
-        P.chests[id] = true; grant(r); save(); MS.sfx.choose();
-        rewardModal('Сундук главы', r); render();
-      });
-      miles.querySelector('.rail').appendChild(b);
-    });
+    // chapter chest: milestones live in its modal
+    const ready = MILES.some((m, k) => best >= m.t && !P.chests[`${i}-${k}`]);
+    const done = MILES.every((m, k) => P.chests[`${i}-${k}`]);
+    $('lbChest').classList.toggle('ready', ready);
+    $('lbChest').querySelector('use').setAttribute('href', done ? '#i-chest-open' : '#i-chest');
+    $('lbChestDot').classList.toggle('hidden', !ready);
 
     const ld = leaderDef();
     const lead = $('lbLeader');

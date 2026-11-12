@@ -100,17 +100,13 @@
         <div class="lb-chapter" id="lbChapter">
           <div class="lb-chcard" id="lbChCard">
             <div class="lb-chinfo">
-              <div class="lb-chnum" id="lbChNum">Глава 1</div>
               <div class="lb-chname" id="lbChName">1. Мятная долина</div>
               <div class="lb-chmeta" id="lbChMeta"></div>
             </div>
             <div class="lb-chstage">
-              <div class="lb-chart" id="lbChArt"></div>
-              <button class="lb-arrow prev" id="lbPrev" aria-label="Предыдущая глава"><svg><use href="#i-chev"/></svg></button>
-              <button class="lb-arrow next" id="lbNext" aria-label="Следующая глава"><svg><use href="#i-chev"/></svg></button>
+              <button class="lb-chart" id="lbChArt" aria-label="Выбрать главу"></button>
             </div>
           </div>
-          <div class="lb-chdots" id="lbChDots"></div>
         </div>
 
         <div class="lb-stage">
@@ -125,7 +121,7 @@
         </div>
 
         <div class="lb-bottom">
-          <div class="lb-miles" id="lbMiles"></div>
+          <button class="lb-chest" id="lbChest"><svg><use href="#i-chest"/></svg><em>Сундук главы</em><i class="dot hidden" id="lbChestDot"></i></button>
           <button class="lb-leader" data-goto="squad" id="lbLeader"></button>
           <button class="lb-play" id="lbPlay"><span class="t">В бой</span><span class="c"><svg><use href="#i-bolt"/></svg><b id="lbCost">5</b></span></button>
           <div id="best" class="best"></div>
@@ -164,6 +160,15 @@
       <button data-tab="evolve"><span><svg><use href="#i-evolve"/></svg></span><em>Эволюция</em></button>
       <button data-tab="challenge"><span><svg><use href="#i-flame"/></svg></span><em>Испытания</em></button>
     </nav>
+
+    <!-- Chapter picker -->
+    <div class="lb-pick hidden" id="lbPick">
+      <div class="lu-ribbon"><h2 id="lbPickName"></h2></div>
+      <div class="lb-pickrail" id="lbPickRail"></div>
+      <div class="lb-pickdesc" id="lbPickDesc"></div>
+      <button class="lb-pickgo" id="lbPickGo">Выбрать</button>
+      <button class="lb-pickback" id="lbPickBack" aria-label="Назад"><svg><use href="#i-chev"/></svg></button>
+    </div>
   </div>
 
   <!-- Lobby modal + toast -->

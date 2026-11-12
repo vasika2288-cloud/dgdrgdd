@@ -510,7 +510,7 @@
       const u = currentChoices[Number(k) - 1];
       if (u) chooseUpgrade(u);
     }
-    if (state === 'menu' && k === 'enter' && !document.querySelector('.lb-modal:not(.hidden)')) requestRun();
+    if (state === 'menu' && k === 'enter' && !document.querySelector('.lb-modal:not(.hidden), .lb-pick:not(.hidden)')) requestRun();
   });
   window.addEventListener('keyup', (e) => keys.delete(e.key.toLowerCase()));
   window.addEventListener('blur', () => { keys.clear(); releaseJoy(); if (state === 'play') togglePause(); });
