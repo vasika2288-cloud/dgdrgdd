@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Один дома</title>
+<style>
+  @font-face { font-family: "Montserrat"; src: url("../assets/fonts/Montserrat.ttf"); font-weight: 100 900; }
+  @font-face { font-family: "Caveat"; src: url("../assets/fonts/Caveat.ttf"); font-weight: 400 700; }
+  @font-face { font-family: "JetBrains Mono"; src: url("../assets/fonts/JetBrainsMono.ttf"); font-weight: 100 800; }
+  html, body { margin: 0; background: #000; height: 100%; overflow: hidden; }
+  svg { display: block; width: 576px; height: 1024px; }
+  body.preview { display: flex; justify-content: center; }
+  body.preview svg { height: 100vh; width: auto; cursor: pointer; }
+</style>
+</head>
+<body>
+<svg id="stage" viewBox="0 0 576 1024" xmlns="http://www.w3.org/2000/svg"></svg>
+<audio id="voice" src="../out/mix.wav" preload="auto"></audio>
+<script src="../assets/audio/words.js"></script>
+<script src="film.js"></script>
+</body>
+</html>

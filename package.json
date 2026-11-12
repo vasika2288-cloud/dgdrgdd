@@ -1,0 +1,12 @@
+{
+  "name": "odin-doma",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sfx": "bash tools/sfx.sh",
+    "render": "bash tools/sfx.sh && node render.mjs"
+  },
+  "dependencies": {
+    "puppeteer-core": "^24.0.0"
+  }
+}
