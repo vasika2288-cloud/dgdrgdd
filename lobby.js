@@ -18,10 +18,11 @@
     { name: 'Грозовые крыши', icon: '⛈️', color: '#8f7dff', enemyHp: 2.5, reward: 2.8, desc: 'Плевуны засели на каждой трубе' },
     { name: 'Трон Мракуса', icon: '👑', color: '#ff4d6d', enemyHp: 3.3, reward: 3.6, desc: 'Логово Крысиного Короля. Только для легенд' },
   ];
+  // survival milestones (seconds) with base rewards; coins scale with the chapter reward multiplier
   const MILES = [
-    { t: 120, label: '2:00', gems: 20, coins: 100 },
-    { t: 240, label: '4:00', gems: 30, coins: 200 },
-    { t: 360, label: 'Победа', gems: 60, coins: 500, win: true },
+    { t: 60, gems: 15, coins: 80 },
+    { t: 150, gems: 25, coins: 200 },
+    { t: 270, gems: 50, coins: 450 },
   ];
   const TALENTS = [
     { id: 'hp', name: 'Крепкое здоровье', icon: 'heart', max: 10, per: 0.08, fmt: (v) => `+${Math.round(v * 100)}% к HP` },
@@ -335,6 +336,11 @@
     $('lbPlay').addEventListener('click', () => { runCtx = { chapter: P.chapter, challenge: false }; api.requestRun(); });
     $('lbChArt').addEventListener('click', openPick);
     $('lbChest').addEventListener('click', openChest);
+    $('lbChestBack').addEventListener('click', () => { MS.sfx.click(); closeChest(); });
+    $('lbChestRail').addEventListener('scroll', () => {
+      const k = Math.max(0, Math.min(MILES.length - 1, Math.round($('lbChestRail').scrollLeft / railStep($('lbChestRail')))));
+      if (k !== chestIdx) { chestIdx = k; MS.sfx.click(); renderChest(); }
+    }, { passive: true });
     $('lbPickBack').addEventListener('click', () => { MS.sfx.click(); closePick(); });
     $('lbPickGo').addEventListener('click', confirmPick);
     $('lbPickRail').addEventListener('scroll', () => {
@@ -350,7 +356,8 @@
     $('lbMClose').addEventListener('click', closeModal);
     $('lbModal').addEventListener('click', (e) => { if (e.target.id === 'lbModal') closeModal(); });
     window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') { closeModal(); closePick(); }
+      if (e.key === 'Escape') { closeModal(); closePick(); closeChest(); }
+      if (chestOpen()) { if (e.key === 'ArrowLeft') chestScroll(chestIdx - 1, true); else if (e.key === 'ArrowRight') chestScroll(chestIdx + 1, true); return; }
       if (!pickOpen()) return;
       if (e.key === 'ArrowLeft') pickScroll(pickIdx - 1, true);
       else if (e.key === 'ArrowRight') pickScroll(pickIdx + 1, true);
@@ -360,6 +367,7 @@
 
   function setTab(t) {
     tab = t;
+    closeChest();
     MS.sfx.click();
     document.querySelectorAll('.lb-nav button').forEach((b) => b.classList.toggle('active', b.dataset.tab === t));
     document.querySelectorAll('.lb-view').forEach((v) => v.classList.toggle('hidden', v.dataset.view !== t));
@@ -369,7 +377,8 @@
   // ---------------------------------------------------------------- chapter picker
   let pickIdx = 0;
   const pickOpen = () => !$('lbPick').classList.contains('hidden');
-  const pickStep = () => { const r = $('lbPickRail').children; return r.length > 1 ? r[1].offsetLeft - r[0].offsetLeft : 1; };
+  const railStep = (rail) => { const r = rail.children; return r.length > 1 ? r[1].offsetLeft - r[0].offsetLeft : 1; };
+  const pickStep = () => railStep($('lbPickRail'));
   function openPick() {
     MS.sfx.click();
     pickIdx = P.chapter;
@@ -410,23 +419,48 @@
     art.classList.remove('pop'); void art.offsetWidth; art.classList.add('pop');
   }
 
-  // chapter chest: the three survival milestones of the selected chapter
+  // chapter chest screen: survival milestones of the selected chapter
+  let chestIdx = 0;
+  const chestOpen = () => !$('lbChestScr').classList.contains('hidden');
+  const chestState = (k) => (P.chests[`${P.chapter}-${k}`] ? 'claimed' : (P.best[P.chapter] || 0) >= MILES[k].t ? 'ready' : 'todo');
   function openChest() {
-    const i = P.chapter, ch = CHAPTERS[i], best = P.best[i] || 0;
-    const body = el(`<div class="lb-rwm"><h4>Сундук главы</h4>
-      <p class="lb-lead">${i + 1}. ${esc(ch.name)} · рекорд ${best ? fmtClock(best) : '—'}</p><div class="lb-quests"></div></div>`);
+    MS.sfx.click();
+    // start on a reward that can be claimed, else on the next one to earn
+    const st = MILES.map((_, k) => chestState(k));
+    chestIdx = Math.max(0, st.includes('ready') ? st.indexOf('ready') : st.indexOf('todo'));
+    const rail = $('lbChestRail');
+    rail.innerHTML = '';
     MILES.forEach((m, k) => {
-      const id = `${i}-${k}`, r = scaled(m, ch), claimed = !!P.chests[id], reached = best >= m.t;
-      const row = el(`<div class="q ${claimed ? 'claimed' : ''}"><span class="lb-chic">${I(claimed ? 'chest-open' : 'chest')}</span>
-        <div class="tx"><b>${m.win ? 'Победи в главе' : 'Продержись ' + m.label}</b><div class="val">${rewardText(r)}</div></div>
-        <button class="lb-btn gold sm" ${reached && !claimed ? '' : 'disabled'}>${claimed ? 'Получено' : reached ? 'Забрать' : I('lock') + fmtClock(m.t)}</button></div>`);
-      row.querySelector('button').addEventListener('click', () => {
-        P.chests[id] = true; grant(r); save(); MS.sfx.choose();
-        render(); rewardModal('Сундук главы', r);
-      });
-      body.querySelector('.lb-quests').appendChild(row);
+      const b = el(`<button class="lb-medal"><b>${fmtClock(m.t)}</b><em>Гл. ${P.chapter + 1}</em><i>✓</i></button>`);
+      b.addEventListener('click', () => chestScroll(k, true));
+      rail.appendChild(b);
     });
-    openModal(body);
+    $('lbChestScr').classList.remove('hidden');
+    chestScroll(chestIdx, false);
+    renderChest();
+  }
+  function closeChest() { $('lbChestScr').classList.add('hidden'); }
+  function chestScroll(k, smooth) {
+    if (k < 0 || k >= MILES.length) return;
+    $('lbChestRail').scrollTo({ left: k * railStep($('lbChestRail')), behavior: smooth ? 'smooth' : 'instant' });
+  }
+  function renderChest() {
+    const k = chestIdx, m = MILES[k], ch = CHAPTERS[P.chapter], st = chestState(k), r = scaled(m, ch);
+    const best = P.best[P.chapter] || 0;
+    $('lbChestGoal').textContent = `Продержись дольше ${fmtClock(m.t)}`;
+    [...$('lbChestRail').children].forEach((b, n) => { b.className = `lb-medal ${chestState(n)}${n === k ? ' on' : ''}`; });
+    $('lbChestRew').innerHTML = [['gem', r.gems], ['fish', r.coins]].map(([ic, v]) => `<div class="it">${I(ic)}<b>×${fmtNum(v)}</b></div>`).join('');
+    const foot = $('lbChestFoot');
+    if (st === 'ready') {
+      foot.innerHTML = '<button class="lb-pickgo">Забрать</button>';
+      foot.firstChild.addEventListener('click', () => {
+        P.chests[`${P.chapter}-${k}`] = true; grant(r); save(); MS.sfx.choose();
+        render(); renderChest(); rewardModal('Сундук главы', r);
+      });
+    } else {
+      foot.innerHTML = st === 'claimed' ? `<p class="ok">${I('check')}Награда получена</p>`
+        : `<p>Продержись дольше ${fmtClock(m.t)}, чтобы забрать<small>Рекорд главы: ${best ? fmtClock(best) : '—'}</small></p>`;
+    }
   }
 
   // ---------------------------------------------------------------- rendering
@@ -477,12 +511,6 @@
     $('lbChest').querySelector('use').setAttribute('href', done ? '#i-chest-open' : '#i-chest');
     $('lbChestDot').classList.toggle('hidden', !ready);
 
-    const ld = leaderDef();
-    const lead = $('lbLeader');
-    lead.innerHTML = '';
-    lead.style.setProperty('--cc', ld.magic);
-    lead.appendChild(MS.catPortrait(ld, 1, 38));
-    lead.insertAdjacentHTML('beforeend', `<span class="who"><small>Лидер · ур. ${catLvl(ld.id)}</small><b>${esc(ld.name)}</b></span><span class="pw">${I('swords')}${fmtNum(squadPower())}</span>`);
     $('lbPlay').disabled = locked;
     $('lbPlay').classList.toggle('poor', P.energy < RUN_COST);
     $('lbCost').textContent = RUN_COST;
